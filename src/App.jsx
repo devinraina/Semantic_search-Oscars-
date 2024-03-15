@@ -1,14 +1,14 @@
+import { useEffect } from 'react';
 import './App.css';
 import { useState } from 'react';
 
 function App() {
   const [apiResponse, setApiResponse] = useState();  // Store API response
-
-  let param= 40;
-
+  let param=document.getElementById('prompt').value;
+  let res=document.getElementById('year').value;
   const callAPI = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/run_foo?param_to_foo=${param}`);
+      const response = await fetch(`http://localhost:5000/api/run_foo?param_prompt=${param}&param_year=${res}`);
       const data = await response.json();
       setApiResponse(data.result);  // Update state with API response
     } catch (error) {
@@ -20,7 +20,14 @@ function App() {
   return (
     <>
       <h1>Oscars Info AI</h1>
-      <label>Number to pass to foo:</label>
+      <label>Prompt:</label>
+      <input type="text" id='prompt' />
+      <select class="form-select" id='year' name="year">
+        <option value="">Year</option>
+        {Array.from({ length: 93 }).map((_, index) => (  // Assuming 100 years
+    <option key={index} value={index + 1932}>{index + 1932}</option>
+  ))}
+      </select>
       <button onClick={callAPI}>Send</button>
       <p>API response:</p>
       {apiResponse ? (
