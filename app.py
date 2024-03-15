@@ -1,0 +1,60 @@
+import pandas as pd
+import chromadb
+from flask import Flask , render_template, request
+
+app = Flask(__name__)
+   
+@app.route("/", methods=["GET", "POST"])
+def index():
+    prompt = None
+    year = None
+    mesage = None
+    def dataFrame(prompt, year):
+        df=pd.read_csv('./data/the_oscar_award.csv')
+        df=df.loc[df['year_ceremony'] == int(year)]
+        df=df.loc[df['year_film'] <= int(year)]      
+        df=df.dropna()
+        df.loc[:, 'category'] = df['category'].str.lower()
+        df.loc[:, 'text'] = df['name'] + ' got nominated under the category, ' + df['category'] + ', for the film ' + df['film'] +' ('+ df['year_film'].apply(str) +')' + ' to win the award' + "              "
+        df.loc[df['winner'] == False, 'text'] = df['name'] + ' got nominated under the category, ' + df['category'] + ', for the film ' + df['film'] +' ('+ df['year_film'].apply(str) +')' + ' but did not win' + "           "  
+        
+        client =chromadb.Client() 
+        collection = client.get_or_create_collection("oscars-2023")
+        docs =df["text"].tolist()
+        ids= [str(x) for x in df.index.tolist()] 
+        collection.add(
+            documents=docs,
+            ids=ids
+        )
+
+        results = collection.query(
+            query_texts=[prompt],
+            n_results=10,
+        )
+        print(results)
+        return results['documents']
+    #default value for the search bar
+    if request.method == "POST" and 'prompt' in request.form:
+        try:
+            print(request.form)
+            prompt=request.form.get("prompt")
+            year=request.form.get("year")    
+            if prompt:
+                print("hello main")
+                new_val=dataFrame(prompt=prompt, year=year)   
+                return render_template("index.html", prompt=new_val,yearG=year)
+        except Exception as e:
+            message = f"Error: {str(e)}"
+            print(mesage)    
+        return render_template("index.html", prompt=prompt, yearG=year)
+
+    else:
+        mesage="please enter prompt and  year"
+        return render_template('index.html',message=mesage),400
+    
+    
+#end of index function .......................................
+        
+
+if __name__ == "__main__":
+    app.run()
