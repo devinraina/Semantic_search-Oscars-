@@ -37,9 +37,13 @@ def dataFrame(prompt, year):
 def this_function_name_doesnt_really_matter():
     foo_param = request.args.get("param_prompt", type=str)
     year = request.args.get("param_year", type=str)
-    print(request.args)
-    data = {"result": dataFrame(foo_param, year)}
-    return jsonify(data)
+    if foo_param =="" and year=="":
+        result={'error':'Please provide a prompt or a year'}
+        return jsonify(result)
+    else:
+        print(request.args)
+        data = {"result": dataFrame(foo_param, year)}
+        return jsonify(data)
 
 if __name__ == "__main__":
     app.run()

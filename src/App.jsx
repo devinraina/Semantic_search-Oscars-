@@ -5,7 +5,7 @@ import { useState } from 'react';
 function App() {
   const [apiResponse, setApiResponse] = useState();  // Store API response
   let param=document.getElementById('prompt')? document.getElementById('prompt').value : "";
-  let res=document.getElementById('year')?document.getElementById('year').value :"2023";
+  let res=document.getElementById('year')?document.getElementById('year').value :"";
   const callAPI = async () => {
     try {
       const response = await fetch(`http://localhost:5000/api/run_foo?param_prompt=${param}&param_year=${res}`);
@@ -17,6 +17,9 @@ function App() {
     }
   };
 
+  const reset=(()=>{
+    setApiResponse("");
+  })
   return (
     <>
       <h1>Oscars Info AI</h1>
@@ -29,11 +32,13 @@ function App() {
   ))}
       </select>
       <button onClick={callAPI}>Send</button>
+      <button onClick={reset}>Reset</button>
+      {param? "" :<p>Please enter a prompt and select a year.</p>}
       <p>API response:</p>
       {apiResponse ? (
         <p id="api-response">{apiResponse}</p>
       ) : (
-        <p>Awaiting API response...</p>
+        <div class='circular-loader'></div>
       )}
     </>
   );
