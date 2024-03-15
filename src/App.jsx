@@ -4,8 +4,8 @@ import { useState } from 'react';
 
 function App() {
   const [apiResponse, setApiResponse] = useState();  // Store API response
-  let param=document.getElementById('prompt').value;
-  let res=document.getElementById('year').value;
+  let param=document.getElementById('prompt')? document.getElementById('prompt').value : "";
+  let res=document.getElementById('year')?document.getElementById('year').value :"2023";
   const callAPI = async () => {
     try {
       const response = await fetch(`http://localhost:5000/api/run_foo?param_prompt=${param}&param_year=${res}`);
