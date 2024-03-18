@@ -8,12 +8,12 @@ CORS(app)
 
 def dataFrame(prompt, year):
     df=pd.read_csv('./data/the_oscar_award.csv')
-    df=df.loc[df['year_ceremony'] == int(year)]
-    df=df.loc[df['year_film'] <= int(year)]      
+    df=df.loc[df['year_ceremony'] <= int(year)]
+    df=df.loc[df['year_ceremony'] >= int(year)-3]      
     df=df.dropna()
     df.loc[:, 'category'] = df['category'].str.lower()
-    df.loc[:, 'text'] = df['name'] + ' got nominated under the category, ' + df['category'] + ', for the film ' + df['film'] +' ('+ df['year_film'].apply(str) +')' + ' to win the award' + "              "
-    df.loc[df['winner'] == False, 'text'] = df['name'] + ' got nominated under the category, ' + df['category'] + ', for the film ' + df['film'] +' ('+ df['year_film'].apply(str) +')' + ' but did not win' + "           "  
+    df.loc[:, 'text'] = df['name'] + ' got nominated under the category, ' + df['category'] + ', for the film ' + df['film'] +' ('+ df['year_film'].apply(str) +')' + ' to win the award' + " at OSCARS "+'('+ df['year_ceremony'].apply(str) +')' +"              "
+    df.loc[df['winner'] == False, 'text'] = df['name'] + ' got nominated under the category, ' + df['category'] + ', for the film ' + df['film'] +' ('+ df['year_film'].apply(str) +')' + ' but did not win' + " at OSCARS "+'('+ df['year_ceremony'].apply(str) +')' + "          " 
         
     client =chromadb.Client() 
     collection = client.get_or_create_collection("oscars-2023")
@@ -26,7 +26,7 @@ def dataFrame(prompt, year):
 
     results = collection.query(
         query_texts=[prompt],
-        n_results=10,
+        n_results=20,
     )
     print(results)
     return results['documents']
