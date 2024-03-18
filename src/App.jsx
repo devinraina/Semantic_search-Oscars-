@@ -52,6 +52,7 @@ function App() {
 
   return (
     <>
+    <img src='../download.jfif'></img>
       <h1>Oscars Info AI</h1>
       <label>Prompt:</label>
       <input type="text" id='prompt' name='prompt' on onChange={handle} />
