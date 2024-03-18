@@ -31,7 +31,7 @@ function App() {
     const prompt = event.target.value;
     // Update the state (replace with your actual state management approach)
     setRes(prompt); // Assuming you have a state variable called 'res'
-    console.log('Selected year:', prompt); // Optional: log the selected year
+    console.log('Selected Prompt:', prompt); // Optional: log the selected year
   };
 
 
@@ -46,6 +46,9 @@ function App() {
       // Handle errors appropriately
     }
   };
+  const reset=(()=>{
+    setApiResponse("");
+  })
 
   return (
     <>
@@ -60,7 +63,9 @@ function App() {
             </option>
           ))}
       </select>
+      <br></br>
       <button onClick={callAPI}>Send</button>
+      <button onClick={reset}>Reset</button>
       <p>API response:</p>
       {apiResponse ? (
         <p id="api-response">{apiResponse}</p>
