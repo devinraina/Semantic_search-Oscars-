@@ -58,9 +58,9 @@ function App() {
       <input type="text" id='prompt' name='prompt' on onChange={handle} />
       <select className="form-select" id='year' name="year" onChange={handleYearChange}>
         <option value="">Year</option>
-          {Array.from({ length: 93 }).map((_, index) => (
-            <option key={index} value={index + 1932}>
-            {index + 1932}
+          {Array.from({ length: 96 }).map((_, index) => (
+            <option key={index} value={index + 1928}>
+            {index + 1928}
             </option>
           ))}
       </select>
